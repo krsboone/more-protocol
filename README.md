@@ -24,8 +24,11 @@ by humans without tools.
 ## What's here
 
 - [`SPEC.md`](SPEC.md) — the full protocol specification
+- [`FOR-AI.md`](FOR-AI.md) — practical implementation guide for AI systems
 - [`MORE.md`](MORE.md) — protocol identifier (included in conforming implementations)
 - [`examples/`](examples/) — example memory files for each type
+- [`implementations/`](implementations/) — platform-specific wiring guides
+  - [`claude-code.md`](implementations/claude-code.md) — Claude Code setup
 
 ## Status
 
