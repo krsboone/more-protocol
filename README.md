@@ -29,10 +29,16 @@ by humans without tools.
 
 ## Status
 
-**Version 0.1 — Draft.** The spec is under active development. The reference
+**Version 0.2 — Draft.** The spec is under active development. The reference
 implementation is the `more/` memory system maintained by Kris Boone and Meridian.
 
 Feedback and contributions welcome. Open an issue or submit a PR.
+
+---
+
+## License
+
+[MIT License](LICENSE) — implement freely, build on it, ship it. Attribution appreciated.
 
 ---
 
