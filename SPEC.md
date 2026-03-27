@@ -290,8 +290,8 @@ a memory, not the infrastructure around it.
 
 ## Reference implementation
 
-The `more/` memory system maintained by Kris Boone and Meridian at
-`/Users/kris/Coding/more/` is the reference implementation of this spec.
+The memory system maintained by Kris Boone and Meridian at
+`https://github.com/krsboone/more` is the reference implementation of this spec.
 It predates the formalization of the protocol and is being aligned with
 this spec iteratively.
 

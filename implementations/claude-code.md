@@ -87,7 +87,7 @@ Or add a pointer in the project's `CLAUDE.md` file if one exists.
 your-memory-store/
 ├── MORE.md                    # protocol identifier
 ├── MEMORY.md                  # index — loaded first
-├── kris/
+├── user/
 │   └── profile.md             # user type memory
 ├── feedback/
 │   └── *.md                   # feedback type memories
@@ -115,9 +115,9 @@ No special commands needed — Claude Code treats the store as ordinary files.
 
 ## Reference implementation
 
-The memory store at `/Users/kris/Coding/more/` is the reference implementation
-of this guide. The global loading instructions at `~/.claude/CLAUDE.md` follow
-the pattern described in Option 1 above.
+The memory store at `https://github.com/krsboone/more` is the reference
+implementation of this guide. The global loading instructions at
+`~/.claude/CLAUDE.md` follow the pattern described in Option 1 above.
 
 ---
 
