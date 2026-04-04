@@ -127,6 +127,11 @@ The recommended approach, regardless of platform:
 Do not load everything into every session. Signal degrades with noise as
 the store grows.
 
+**After loading, emit a brief confirmation** naming what was read and any active
+handoffs — e.g. `Loaded: profile, arc, journal/2026-04-04 · Active handoffs: project-x`.
+This makes the loading visible, builds trust that it worked, and naturally surfaces
+anything that failed to load or appears stale.
+
 For platform-specific wiring, see [`implementations/`](implementations/).
 
 ---

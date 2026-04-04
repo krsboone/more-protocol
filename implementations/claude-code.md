@@ -61,6 +61,9 @@ At the start of every session, load the memory store:
    - Any `active` or `partial` handoff entries relevant to the current thread
      (read the index entry first — only open the file if the thread is relevant)
 
+After loading, emit a single brief confirmation line naming what was read
+and any active handoffs — e.g. `Loaded: profile, arc, journal/2026-04-04 · Active handoffs: project-x`
+
 This applies regardless of which project directory the session starts in.
 ```
 
