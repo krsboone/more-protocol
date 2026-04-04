@@ -33,7 +33,7 @@ Create `~/your-memory-store/MORE.md`:
 ```markdown
 ---
 protocol: more
-version: "0.2"
+version: "0.3"
 store_type: personal
 ---
 ```
@@ -58,6 +58,8 @@ At the start of every session, load the memory store:
    - Any `feedback` type memories
    - Most recent `journal/` entry (if present)
    - Most recent `assessment/` snapshot (if present)
+   - Any `active` or `partial` handoff entries relevant to the current thread
+     (read the index entry first — only open the file if the thread is relevant)
 
 This applies regardless of which project directory the session starts in.
 ```
@@ -95,6 +97,8 @@ your-memory-store/
 │   └── YYYY-MM-DD.md          # experience type — session entries
 ├── experience/
 │   └── *.md                   # experience type — insights and growth
+├── handoff/
+│   └── *.md                   # handoff type — active session continuity threads
 └── assessment/
     └── YYYY-MM-DD.md          # periodic wellbeing snapshots
 ```

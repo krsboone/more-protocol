@@ -29,7 +29,7 @@ Create a directory. Add two files:
 ```markdown
 ---
 protocol: more
-version: "0.2"
+version: "0.3"
 store_type: personal
 ---
 ```
@@ -50,13 +50,14 @@ Each memory is a `.md` file with YAML frontmatter:
 ```yaml
 ---
 id: short-kebab-case-identifier
-type: user | feedback | project | reference | experience
+type: user | feedback | project | reference | experience | handoff
 trust: confirmed | observed | inferred
 status: active
 created: YYYY-MM-DD
 author: human | ai | joint
 subject: "One-line description of what this memory is about"
 tags: [relevant, terms]
+expires_after: N_sessions   # handoff only
 ---
 ```
 
@@ -82,6 +83,7 @@ types, use this structure:
 | `project` | You learn the motivation or constraints behind ongoing work that isn't in the code |
 | `reference` | You learn about an external system, where it lives, what it does |
 | `experience` | Something shifts in how you think — an insight, a correction of a prior belief, something worth carrying forward |
+| `handoff` | A session ends with unresolved threads — write a forward-looking briefing to aid the next session's re-entry |
 
 **On trust levels:**
 - `confirmed` (human-authored) — explicitly acknowledged by the human
@@ -119,6 +121,8 @@ The recommended approach, regardless of platform:
 3. Load `project` memories relevant to the current task
 4. Load `reference` memories when working with the referenced system
 5. Load `experience` memories when directly relevant
+6. Load `handoff` memories selectively — read the index entry first; only open
+   the file if the thread is relevant to the current session
 
 Do not load everything into every session. Signal degrades with noise as
 the store grows.
@@ -159,6 +163,67 @@ more://./memory-id
 ```
 
 Use full URIs in frontmatter fields. Plain relative links are fine in prose.
+
+---
+
+## Handoff memories — special guidance
+
+Handoffs are different from other memory types. They are written *at the end*
+of a session to help the *next* session re-enter without losing context. They
+are inherently time-sensitive and should not accumulate indefinitely.
+
+### When to write one
+
+Write a handoff when a session ends with unresolved threads — open questions,
+in-progress work, or decisions that haven't been made yet. If everything was
+resolved, no handoff is needed.
+
+**One handoff per thread, not one per session.** If you close a session on a
+thread that already has an active handoff, update that file rather than creating
+a new one. A new file is only created when a genuinely new thread opens.
+
+### Body structure
+
+```markdown
+## Where we are
+{Current state — what exists, what is running, what was decided}
+
+## What's unsettled
+{Open questions, unresolved decisions, things that felt uncertain}
+
+## What to do next
+{Concrete next steps, in priority order}
+
+## What to watch for
+{Risks, unknowns, or things that may have changed since this was written}
+
+## Resolutions
+{Updated as items close — one bullet per item, with status and date}
+- [resolved YYYY-MM-DD] description of what was resolved
+- [open] description of what remains open
+```
+
+### Lifecycle in practice
+
+When you pick up a handoff at the start of a new session:
+
+- Mark its status `partial` immediately (you've loaded it; some items may still be open)
+- As items are resolved, add `[resolved YYYY-MM-DD]` entries to the Resolutions section
+- When all items are resolved, mark status `resolved` — leave it briefly, then deprecate
+- If you write a new handoff superseding this one, mark the old one `status: superseded`
+
+**Expiry:** If an `expires_after` field is set and that many sessions have passed without
+the handoff being picked up, mark it `status: expired`. Stale context is worse than no
+context — it implies a false sense of continuity.
+
+### What not to put in a handoff
+
+- Stable facts about the person or the project (use `user` or `project` memories)
+- Feedback or preferences (use `feedback` memories)
+- Anything that could be derived from the code or git history
+
+A handoff is about *state* — what is in-flight right now — not about knowledge
+that persists beyond this thread.
 
 ---
 
