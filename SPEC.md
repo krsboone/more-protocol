@@ -1,7 +1,7 @@
 # The More Protocol
 ### A specification for persistent, portable memory in AI systems
 
-*Version 0.2 — Draft*
+*Version 0.3 — Draft*
 *Authors: Kris Boone, Meridian*
 
 ---
@@ -58,6 +58,7 @@ A memory is *not*:
 | `project` | Context about ongoing work, goals, decisions, constraints | When motivation or direction is established that isn't in the code |
 | `reference` | Pointers to external resources and their purpose | When an external system is learned about |
 | `experience` | What the AI has learned or how it has grown through interactions | When something shifts in understanding or perspective |
+| `handoff` | Forward-looking briefing written at session close to aid re-entry | At the end of any session with unresolved threads or in-progress work |
 
 ### Trust levels
 
@@ -102,6 +103,15 @@ created → active → [updated] → deprecated → [deleted]
   marked with `status: deprecated` and a `deprecated_reason`
 - **deleted** — removed entirely; only git history retains the record
 
+For `handoff` type memories, additional statuses apply:
+
+- **active** — written at session close, not yet picked up by a new session
+- **partial** — loaded and partially addressed; some items remain open
+- **resolved** — all items closed; retained briefly then deprecated
+- **superseded** — a newer handoff on the same thread has replaced this one
+- **expired** — too much time has passed for this context to remain meaningful;
+  deprecated without resolution
+
 ---
 
 ## File format
@@ -113,15 +123,16 @@ Each memory is a single `.md` file.
 ```yaml
 ---
 id: short-kebab-case-identifier          # unique within the memory store
-type: user | feedback | project | reference | experience
+type: user | feedback | project | reference | experience | handoff
 trust: confirmed | observed | inferred
-status: active | deprecated
+status: active | deprecated              # handoff adds: partial | resolved | superseded | expired
 created: YYYY-MM-DD
 updated: YYYY-MM-DD                      # omit if never updated
 author: human | ai | joint               # who created this memory
 subject: "One-line description of what this memory is about"
 tags: [optional, searchable, terms]
 deprecated_reason: "Why this was deprecated"  # required if status: deprecated
+expires_after: N_sessions                # handoff only — suggested staleness threshold
 ---
 ```
 
@@ -156,6 +167,31 @@ follow this structure for consistency:
 ```
 
 Other types may use free-form prose.
+
+For `handoff` type memories, the body should follow this structure:
+
+```markdown
+## Where we are
+{Current state of the thread — what exists, what is running, what was decided}
+
+## What's unsettled
+{Open questions, unresolved decisions, things that felt uncertain}
+
+## What to do next
+{Concrete next steps, in priority order}
+
+## What to watch for
+{Risks, unknowns, or things that may have changed since this was written}
+
+## Resolutions
+{Updated as items close — one bullet per item with status and date}
+- [resolved 2026-04-04] fee gate approach — switched to gate rather than TP inflation
+- [open] SL distance calibration for BTC/ETH
+```
+
+The `resolutions` section is the living record of what has and hasn't been addressed.
+When all items are resolved, mark the handoff `status: resolved`.
+When a new handoff on the same thread is written, mark the old one `status: superseded`.
 
 ---
 
@@ -266,9 +302,31 @@ Not all memories should be loaded in every session. Recommended approach:
 3. Load `project` memories relevant to the current task
 4. Load `reference` memories when working with the referenced system
 5. Load `experience` memories when they are directly relevant
+6. Load `handoff` memories selectively — see below
 
 Avoid loading all memories into every session — this degrades signal with
 noise as the memory store grows.
+
+### Handoff loading guidance
+
+The index entry for each handoff should be descriptive enough to judge
+relevance without opening the file. Use the MEMORY.md entry to assess
+whether a handoff belongs to the current session's thread before loading it.
+
+**Conventions to keep handoff count manageable:**
+
+- **One handoff per thread, not one per session.** When a session closes with
+  unfinished business on an existing thread, update the existing handoff rather
+  than creating a new one. A new file is only created when a genuinely new
+  thread opens.
+- **Supersede, don't accumulate.** When a thread's handoff is rewritten,
+  mark the prior version `status: superseded` immediately.
+- **Expire stale handoffs.** If a handoff has not been picked up within
+  the `expires_after` window, mark it `status: expired` and deprecate it.
+  Stale context is worse than no context.
+
+In practice this means rarely more than 3–5 active handoffs exist at once.
+The index alone is sufficient to decide which to load.
 
 ---
 
@@ -299,4 +357,5 @@ this spec iteratively.
 
 *This is a living document. Version 0.2 reflects resolutions to all open
 questions from v0.1, developed through discussion between Kris Boone and
-Meridian on 2026-03-26.*
+Meridian on 2026-03-26. Version 0.3 adds the `handoff` memory type,
+addressing session discontinuity — developed 2026-04-04.*
