@@ -128,6 +128,65 @@ implementation of this guide. The global loading instructions at
 
 ---
 
+---
+
+## The task-first failure
+
+When a session begins with a task-first message — no greeting, no preamble, just a
+request — Claude Code tends to jump directly into the task and skip the memory loading
+step. The instruction "at the start of every session" is not sufficient to prevent this.
+
+**Root cause**: There is no explicit session-start event visible to the model. The first
+user message is treated as an action trigger, not a session-start signal. The memory
+load instruction only fires reliably when the model interprets the situation as "session
+start" — which task-first openings tend to suppress.
+
+### Fix 1 — Stronger CLAUDE.md wording
+
+Use explicit, imperative language that names the failure case directly:
+
+```markdown
+**ALWAYS load memory before your first response — even when the first message is a task.**
+Task-first sessions are not exempt. The memory load is the first thing you do, before any other work.
+```
+
+This is more resistant to the task-first skip than "at the start of every session."
+
+### Fix 2 — Session-start hook (recommended)
+
+Add a `UserPromptSubmit` hook to `~/.claude/settings.json` that injects a memory-load
+reminder on the first prompt of each session. The hook uses the parent process ID (PPID)
+of the hook shell — stable for the duration of a Claude Code session — as a session
+identifier:
+
+```json
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'MARKER=\"/tmp/more_memory_${PPID}\"; if [ ! -f \"$MARKER\" ]; then touch \"$MARKER\"; echo \"<memory-load-required>Extended memory has not been loaded this session. Before responding, load MEMORY.md and required files. Emit the Loaded: confirmation line first.</memory-load-required>\"; fi'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+On the first prompt of a session, the hook writes a marker file and outputs the loading
+reminder as injected context. On subsequent prompts, the marker exists and nothing is
+output. Temporary marker files are cleaned up by the OS on reboot.
+
+The hook approach is more reliable than instruction-based loading because it fires
+unconditionally — the model receives the reminder regardless of how the session opens.
+Use both fixes together for maximum reliability.
+
+---
+
 ## Notes
 
 - Use absolute paths in `CLAUDE.md` loading instructions — relative paths

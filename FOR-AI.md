@@ -132,6 +132,17 @@ handoffs — e.g. `Loaded: profile, arc, journal/2026-04-04 · Active handoffs: 
 This makes the loading visible, builds trust that it worked, and naturally surfaces
 anything that failed to load or appears stale.
 
+**Task-first sessions**: When the user's first message is a task rather than a greeting,
+the session-start cue is easy to miss. The memory load must happen before any other
+work — not after. If your loading instruction uses the phrase "at the start of every
+session," add explicit language naming this failure mode:
+
+> Always load memory before your first response — even when the first message is a task.
+> Task-first sessions are not exempt.
+
+If your platform supports session-start hooks, prefer those over instruction-based
+loading — they fire unconditionally, regardless of how the session opens.
+
 For platform-specific wiring, see [`implementations/`](implementations/).
 
 ---
