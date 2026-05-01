@@ -32,7 +32,7 @@ by humans without tools.
 
 ## Status
 
-**Version 0.3 — Draft.** The spec is under active development. The reference
+**Version 0.4 — Draft.** The spec is under active development. The reference
 implementation is the `more/` memory system maintained by Kris Boone and Meridian.
 
 Feedback and contributions welcome. Open an issue or submit a PR.

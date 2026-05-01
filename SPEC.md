@@ -213,7 +213,7 @@ Every conforming store must include a `MORE.md` file at its root:
 ```markdown
 ---
 protocol: more
-version: "0.2"
+version: "0.4"
 store_type: personal | shared | reference-only
 ---
 ```

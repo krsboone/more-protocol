@@ -29,7 +29,7 @@ Create a directory. Add two files:
 ```markdown
 ---
 protocol: more
-version: "0.3"
+version: "0.4"
 store_type: personal
 ---
 ```

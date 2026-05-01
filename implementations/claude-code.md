@@ -33,7 +33,7 @@ Create `~/your-memory-store/MORE.md`:
 ```markdown
 ---
 protocol: more
-version: "0.3"
+version: "0.4"
 store_type: personal
 ---
 ```
