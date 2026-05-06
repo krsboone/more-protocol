@@ -30,6 +30,14 @@ by humans without tools.
 - [`implementations/`](implementations/) — platform-specific wiring guides
   - [`claude-code.md`](implementations/claude-code.md) — Claude Code setup
 
+## Ecosystem
+
+Tools built on the More Protocol:
+
+- [`more-map`](https://github.com/krsboone/more-map) — reads a More Protocol
+  store and renders a portrait of the collaboration: session timeline, handoff
+  map, topic threads, tone over time. Uses `$MORE_PATH` for zero-config discovery.
+
 ## Status
 
 **Version 0.4 — Draft.** The spec is under active development. The reference

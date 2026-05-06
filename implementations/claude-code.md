@@ -70,6 +70,18 @@ This applies regardless of which project directory the session starts in.
 Use absolute paths. Claude Code will follow these instructions at the
 start of every session.
 
+**Step 4 — Set the `MORE_PATH` environment variable:**
+
+Add to your shell profile (`~/.zshrc`, `~/.bashrc`, etc.):
+```bash
+export MORE_PATH="/absolute/path/to/your-memory-store"
+```
+
+`MORE_PATH` is the canonical env var for the more ecosystem. Tools that
+read a More Protocol store — such as `more-map` — use it to locate your
+store without requiring a path argument. Set it once, and any compatible
+tool works automatically.
+
 ---
 
 ## Option 2 — Project-scoped store
@@ -194,3 +206,5 @@ Use both fixes together for maximum reliability.
 - Keep `MEMORY.md` under 200 lines — it is loaded in full on every session
 - The `~/.claude/CLAUDE.md` file is loaded globally; anything written there
   applies to all Claude Code sessions across all projects
+- Set `MORE_PATH` in your shell profile — ecosystem tools use it to locate
+  your store without a path argument
