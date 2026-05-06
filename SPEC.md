@@ -1,7 +1,7 @@
 # The More Protocol
 ### A specification for persistent, portable memory in AI systems
 
-*Version 0.4 — Draft*
+*Version 0.5 — Draft*
 *Authors: Kris Boone, Meridian*
 
 ---
@@ -213,7 +213,7 @@ Every conforming store must include a `MORE.md` file at its root:
 ```markdown
 ---
 protocol: more
-version: "0.4"
+version: "0.5"
 store_type: personal | shared | reference-only
 ---
 ```
@@ -358,6 +358,6 @@ this spec iteratively.
 *This is a living document. Version 0.2 reflects resolutions to all open
 questions from v0.1, developed through discussion between Kris Boone and
 Meridian on 2026-03-26. Version 0.3 adds the `handoff` memory type,
-addressing session discontinuity — developed 2026-04-04. Version 0.4
+addressing session discontinuity — developed 2026-04-04. Version 0.5
 documents the task-first session failure mode and recommended mitigations
 (explicit CLAUDE.md wording and session-start hooks) — developed 2026-05-01.*
