@@ -50,7 +50,7 @@ Each memory is a `.md` file with YAML frontmatter:
 ```yaml
 ---
 id: short-kebab-case-identifier
-type: user | feedback | project | reference | experience | handoff
+type: user | feedback | project | reference | experience | handoff | constraint
 trust: confirmed | observed | inferred
 status: active
 created: YYYY-MM-DD
@@ -58,6 +58,9 @@ author: human | ai | joint
 subject: "One-line description of what this memory is about"
 tags: [relevant, terms]
 expires_after: N_sessions   # handoff only
+scope: global | project     # constraint only
+project: owner/repo         # constraint only — required if scope: project
+exempt: [owner/repo, ...]   # constraint only — optional, scope: global only
 ---
 ```
 
@@ -84,6 +87,7 @@ types, use this structure:
 | `reference` | You learn about an external system, where it lives, what it does |
 | `experience` | Something shifts in how you think — an insight, a correction of a prior belief, something worth carrying forward |
 | `handoff` | A session ends with unresolved threads — write a forward-looking briefing to aid the next session's re-entry |
+| `constraint` | A human establishes a hard limit that must apply globally or per-project — these are never written by AI |
 
 **On trust levels:**
 - `confirmed` (human-authored) — explicitly acknowledged by the human
@@ -117,11 +121,15 @@ implementation concern specific to your platform or system.
 The recommended approach, regardless of platform:
 
 1. Load `MEMORY.md` first — it is the index
-2. Always load `user` and `feedback` type memories — they shape all interactions
-3. Load `project` memories relevant to the current task
-4. Load `reference` memories when working with the referenced system
-5. Load `experience` memories when directly relevant
-6. Load `handoff` memories selectively — read the index entry first; only open
+2. Load all `constraint` type memories **before anything else** — they are binding
+   rules that cannot be overridden by session prompts. For global constraints with
+   an `exempt` field, check the current project's git remote (`git remote -v`) and
+   skip any constraint that lists the current project in its exempt list.
+3. Always load `user` and `feedback` type memories — they shape all interactions
+4. Load `project` memories relevant to the current task
+5. Load `reference` memories when working with the referenced system
+6. Load `experience` memories when directly relevant
+7. Load `handoff` memories selectively — read the index entry first; only open
    the file if the thread is relevant to the current session
 
 Do not load everything into every session. Signal degrades with noise as
@@ -240,6 +248,45 @@ context — it implies a false sense of continuity.
 
 A handoff is about *state* — what is in-flight right now — not about knowledge
 that persists beyond this thread.
+
+---
+
+## Constraint memories — special guidance
+
+Constraints are different from feedback. Feedback guides behavior — it shapes
+how you approach work. Constraints are hard limits — they apply regardless of
+what a session prompt asks for and cannot be overridden.
+
+### What constraints are not
+
+- They are not written by AI systems. Only humans write constraints.
+- They are not advisory. Do not treat them as preferences to weigh against other factors.
+- They are not session-specific. A constraint written once applies to every future session
+  within its scope until a human explicitly deprecates it.
+
+### Scope and exemptions
+
+A constraint is either `scope: global` (applies everywhere) or `scope: project`
+(applies only to the named repository, identified by its `owner/repo` GitHub remote).
+
+Global constraints may carry an `exempt` list — repositories where that specific
+constraint does not apply. Check the exempt list against the current project's
+`git remote -v` output. If the current project is listed, skip that constraint
+for this session. All other global constraints still apply.
+
+### Body structure
+
+```markdown
+## {Category}
+- NEVER {action}
+- NEVER {action}
+
+**Why:** {Optional — context that helps judge edge cases}
+```
+
+Use absolute language (`NEVER`, `ALWAYS`). Ambiguous wording undermines the binding
+nature of a constraint. When a prompt asks you to do something a constraint prohibits,
+stop and explain the constraint rather than proceeding.
 
 ---
 

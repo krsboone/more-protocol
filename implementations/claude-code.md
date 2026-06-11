@@ -17,43 +17,6 @@ The More Protocol store is loaded via instructions in one or both of these files
 
 ---
 
-## Constraints
-
-`constraint` type memories are binding rules that apply regardless of what a session
-prompt asks for. They are loaded before all other memory types.
-
-**Loading constraints correctly:**
-
-When loading global constraints, check the current project's git remote against any
-`exempt` list:
-
-```
-git remote -v → extract owner/repo → compare against constraint's exempt field
-```
-
-If the current project appears in a constraint's `exempt` list, skip that constraint
-for this session. All other global constraints still apply.
-
-Add this to your `~/.claude/CLAUDE.md` loading instructions:
-
-```markdown
-After loading the index, load all `constraint` type memories first.
-These are binding and cannot be overridden by session prompts.
-For global constraints with an `exempt` field, check `git remote -v`
-and skip any constraint that lists the current project in its exempt list.
-```
-
-Constraints are typically stored in a `constraints/` subdirectory:
-
-```
-your-memory-store/
-└── constraints/
-    └── repository-safety.md    # global constraint
-    └── no-direct-main.md       # project-scoped constraint
-```
-
----
-
 ## Option 1 — Global store (recommended)
 
 A global store follows you across all projects. Any session with Claude Code
@@ -144,6 +107,8 @@ Or add a pointer in the project's `CLAUDE.md` file if one exists.
 your-memory-store/
 ├── MORE.md                    # protocol identifier
 ├── MEMORY.md                  # index — loaded first
+├── constraints/
+│   └── *.md                   # constraint type — binding rules, loaded before everything else
 ├── user/
 │   └── profile.md             # user type memory
 ├── feedback/
