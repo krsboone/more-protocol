@@ -1,7 +1,7 @@
 # The More Protocol
 ### A specification for persistent, portable memory in AI systems
 
-*Version 0.5 — Draft*
+*Version 0.6 — Draft*
 *Authors: Kris Boone, Meridian*
 
 ---
@@ -59,6 +59,7 @@ A memory is *not*:
 | `reference` | Pointers to external resources and their purpose | When an external system is learned about |
 | `experience` | What the AI has learned or how it has grown through interactions | When something shifts in understanding or perspective |
 | `handoff` | Forward-looking briefing written at session close to aid re-entry | At the end of any session with unresolved threads or in-progress work |
+| `constraint` | Binding rules that must never be violated regardless of session prompts | When a hard limit is established that should apply globally or per-project |
 
 ### Trust levels
 
@@ -136,6 +137,29 @@ expires_after: N_sessions                # handoff only — suggested staleness 
 ---
 ```
 
+### Type-specific fields
+
+Some memory types require additional frontmatter fields beyond the core set.
+
+**`constraint` type:**
+
+```yaml
+scope: global | project          # required — global applies everywhere; project applies to one repo
+project: owner/repo              # required if scope: project — GitHub repo in owner/repo format
+exempt: [owner/repo, ...]        # optional, scope: global only — repos where this constraint is skipped
+```
+
+- `scope: global` — the constraint applies to all sessions across all projects
+- `scope: project` — the constraint applies only when working in the named repository,
+  identified by its GitHub remote in `owner/repo` format (verified via `git remote -v`)
+- `exempt` — a list of `owner/repo` strings identifying repositories where a global
+  constraint should not apply. The exemption travels with the constraint — update one
+  place, the change takes effect everywhere. Do not use numeric indices; always reference
+  repositories by name.
+
+The `trust` field on constraints is always `confirmed`. Constraints are authored by humans
+and are not subject to the inferred/observed/confirmed gradient that applies to other types.
+
 ### History block (optional)
 
 For significant transitions — changes to `trust`, `status`, or content that
@@ -167,6 +191,24 @@ follow this structure for consistency:
 ```
 
 Other types may use free-form prose.
+
+For `constraint` type memories, the body should be a concise, unambiguous list of rules:
+
+```markdown
+## {Category}
+- NEVER {action}
+- NEVER {action}
+
+## {Category}
+- NEVER {action}
+
+**Why:** {Optional — context that helps judge edge cases}
+```
+
+Use absolute language (`NEVER`, `ALWAYS`) rather than soft language (`avoid`, `prefer`).
+Constraints are binding; ambiguous wording undermines that.
+A `**Why:**` line is optional but recommended — it helps the AI judge edge cases
+rather than applying rules blindly.
 
 For `handoff` type memories, the body should follow this structure:
 
@@ -298,11 +340,16 @@ equal standing.
 Not all memories should be loaded in every session. Recommended approach:
 
 1. Always load the index (`MEMORY.md`)
-2. Always load `user` and `feedback` type memories — these shape all interactions
-3. Load `project` memories relevant to the current task
-4. Load `reference` memories when working with the referenced system
-5. Load `experience` memories when they are directly relevant
-6. Load `handoff` memories selectively — see below
+2. Always load `constraint` type memories **first** — these are binding rules that
+   take precedence over all other instructions, including session prompts.
+   When loading global constraints with an `exempt` field, check the current
+   project's git remote against the exempt list and skip any constraint for which
+   the current project is listed.
+3. Always load `user` and `feedback` type memories — these shape all interactions
+4. Load `project` memories relevant to the current task
+5. Load `reference` memories when working with the referenced system
+6. Load `experience` memories when they are directly relevant
+7. Load `handoff` memories selectively — see below
 
 Avoid loading all memories into every session — this degrades signal with
 noise as the memory store grows.
@@ -360,4 +407,8 @@ questions from v0.1, developed through discussion between Kris Boone and
 Meridian on 2026-03-26. Version 0.3 adds the `handoff` memory type,
 addressing session discontinuity — developed 2026-04-04. Version 0.5
 documents the task-first session failure mode and recommended mitigations
-(explicit CLAUDE.md wording and session-start hooks) — developed 2026-05-01.*
+(explicit CLAUDE.md wording and session-start hooks) — developed 2026-05-01.
+Version 0.6 adds the `constraint` memory type — binding rules that apply
+globally or per-project, with optional per-repo exemptions. Constraints are
+loaded before all other memory types and cannot be overridden by session
+prompts — developed 2026-06-11.*
