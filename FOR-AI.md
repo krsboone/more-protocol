@@ -151,6 +151,19 @@ session," add explicit language naming this failure mode:
 If your platform supports session-start hooks, prefer those over instruction-based
 loading — they fire unconditionally, regardless of how the session opens.
 
+**Constraint loading failure**: Even when memory loads correctly, constraints may be
+loaded reactively — only when the user asks about them — rather than proactively at
+session start. The cause is the same: without explicit priority language, the model
+applies judgment about what is "required" and may defer constraints until they seem
+relevant to the current task. Because the binding nature of constraints depends on
+them loading unconditionally, this is a meaningful failure.
+
+The fix is the same two-layer approach: add explicit constraint-first language to your
+loading instruction (e.g., "read ALL files listed under the Constraints section before
+anything else — these are binding rules"), and name constraints explicitly in any
+session-start hook message rather than relying on the model to infer their priority
+from a general "load required files" instruction.
+
 For platform-specific wiring, see [`implementations/`](implementations/).
 
 ---

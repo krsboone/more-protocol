@@ -124,7 +124,7 @@ Each memory is a single `.md` file.
 ```yaml
 ---
 id: short-kebab-case-identifier          # unique within the memory store
-type: user | feedback | project | reference | experience | handoff
+type: user | feedback | project | reference | experience | handoff | constraint
 trust: confirmed | observed | inferred
 status: active | deprecated              # handoff adds: partial | resolved | superseded | expired
 created: YYYY-MM-DD
@@ -255,7 +255,7 @@ Every conforming store must include a `MORE.md` file at its root:
 ```markdown
 ---
 protocol: more
-version: "0.5"
+version: "0.6"
 store_type: personal | shared | reference-only
 ---
 ```
