@@ -396,7 +396,7 @@ a memory, not the infrastructure around it.
 ## Reference implementation
 
 The memory system maintained by Kris Boone and Meridian at
-`https://github.com/krsboone/more` is the reference implementation of this spec.
+`https://github.com/krsboone/more-protocol` is the reference implementation of this spec.
 It predates the formalization of the protocol and is being aligned with
 this spec iteratively.
 
