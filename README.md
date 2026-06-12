@@ -40,8 +40,7 @@ Tools built on the More Protocol:
 
 ## Status
 
-**Version 0.6 — Draft.** The spec is under active development. The reference
-implementation is the `more/` memory system maintained by Kris Boone and Meridian.
+**Version 0.6 — Draft.** The spec is under active development.
 
 Feedback and contributions welcome. Open an issue or submit a PR.
 

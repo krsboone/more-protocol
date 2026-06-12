@@ -137,16 +137,6 @@ No special commands needed — Claude Code treats the store as ordinary files.
 
 ---
 
-## Reference implementation
-
-The memory store at `https://github.com/krsboone/more-protocol` is the reference
-implementation of this guide. The global loading instructions at
-`~/.claude/CLAUDE.md` follow the pattern described in Option 1 above.
-
----
-
----
-
 ## The task-first failure
 
 When a session begins with a task-first message — no greeting, no preamble, just a
