@@ -371,6 +371,11 @@ whether a handoff belongs to the current session's thread before loading it.
 - **Expire stale handoffs.** If a handoff has not been picked up within
   the `expires_after` window, mark it `status: expired` and deprecate it.
   Stale context is worse than no context.
+- **Review in passing at session close.** Status transitions above are not
+  limited to the handoff(s) picked up this session. Before ending a session,
+  check whether any other `active`/`partial` handoff for a thread touched this
+  session has been resolved, superseded, or invalidated, and update it.
+  Status should not advance only when a thread is deliberately reopened.
 
 In practice this means rarely more than 3–5 active handoffs exist at once.
 The index alone is sufficient to decide which to load.

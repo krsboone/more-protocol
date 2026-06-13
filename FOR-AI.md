@@ -253,6 +253,24 @@ When you pick up a handoff at the start of a new session:
 the handoff being picked up, mark it `status: expired`. Stale context is worse than no
 context — it implies a false sense of continuity.
 
+### Session-close check
+
+The steps above only fire for handoffs you actively picked up this session.
+Handoffs on threads you *didn't* open can still become resolved, superseded, or
+invalidated as a side effect of other work — a thread left `partial` weeks ago
+may have been finished in passing, or a decision made today may make an
+`active` handoff on another thread obsolete.
+
+Before ending a session, do a quick pass over `MEMORY.md`'s handoff entries for
+any thread touched this session — even tangentially — and update its status if
+the work resolves, supersedes, or invalidates it. This is a glance at the
+index, not a full re-read of every handoff file.
+
+Without this check, handoff status only moves forward when a thread is
+deliberately reopened. Threads that quietly finish stay `active`/`partial`
+indefinitely — the store accumulates handoffs that look open but aren't,
+which is exactly the noise the lifecycle rules above exist to prevent.
+
 ### What not to put in a handoff
 
 - Stable facts about the person or the project (use `user` or `project` memories)
