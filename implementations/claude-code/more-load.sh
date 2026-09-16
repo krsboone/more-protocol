@@ -14,7 +14,8 @@
 MODE="${1:-start}"
 STORE="${MORE_PATH:-/absolute/path/to/your-memory-store}"
 
-SID=$(python3 -c 'import json,sys
+PY=$(command -v python3 || command -v python || true)
+SID=$([ -n "$PY" ] && "$PY" -c 'import json,sys
 try:
     print(json.load(sys.stdin).get("session_id", ""))
 except Exception:

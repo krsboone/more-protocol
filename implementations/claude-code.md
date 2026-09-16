@@ -166,6 +166,12 @@ exactly the failure it exists to catch. `session_id` doesn't collide.
 If your Claude Code version does not accept `|` in a `SessionStart` matcher,
 add one entry per value.
 
+On Windows, Claude Code runs hook commands through Git Bash, so the same
+script works unchanged. It looks for `python3` and then `python` (a
+python.org install provides only the latter); with neither, it falls back to
+keying the marker by process id, which still works but loses the reuse
+protection. Marker files land in Git Bash's `/tmp`.
+
 ### Verifying it
 
 Open a new session with a task-first message — no greeting, just a request.
