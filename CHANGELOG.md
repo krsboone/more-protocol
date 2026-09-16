@@ -45,6 +45,7 @@ directions the spec should follow.
   had been corrupted by the 0.4 → 0.5 bump, which rewrote the line describing
   0.4 to say 0.5. `bump.py` now only touches anchored live references and
   reports every other occurrence for review.
+  The tool is now committed alongside the spec instead of gitignored.
 - **Ecosystem:** `more-lint` added — a checker that makes the lifecycle rules
   fire. Examples added for `journal` and `parked`.
 

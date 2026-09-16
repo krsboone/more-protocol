@@ -37,6 +37,7 @@ The benefit runs to both halves of the pair.
 - [`FOR-HUMAN.md`](FOR-HUMAN.md) — practical guide for users
 - [`CHANGELOG.md`](CHANGELOG.md) — version history
 - [`MORE.md`](MORE.md) — protocol identifier (included in conforming implementations)
+- [`bump.py`](bump.py) — version bump tool; rewrites live version references only, never `CHANGELOG.md`
 - [`examples/`](examples/) — example memory files for each type
 - [`implementations/`](implementations/) — platform-specific wiring guides
   - [`claude-code.md`](implementations/claude-code.md) — Claude Code setup, including the session-start hook
