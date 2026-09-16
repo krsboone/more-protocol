@@ -8,7 +8,7 @@ updated: 2026-03-22
 author: ai
 subject: "Auth middleware refactor — superseded by handoff-auth-refactor-v2 after scope changed"
 tags: [auth, middleware, refactor]
-expires_after: 3_sessions
+expires: 2026-04-25
 deprecated_reason: "Scope expanded significantly after compliance review — replaced by handoff-auth-refactor-v2 which reflects the new requirements"
 history:
   - date: 2026-03-22

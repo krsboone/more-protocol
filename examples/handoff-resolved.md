@@ -8,7 +8,7 @@ updated: 2026-04-06
 author: ai
 subject: "Stripe webhook integration — fully shipped, all items resolved"
 tags: [stripe, webhooks, payments, backend]
-expires_after: 3_sessions
+expires: 2026-04-25
 ---
 
 ## Where we are

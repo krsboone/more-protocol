@@ -7,7 +7,7 @@ created: 2026-04-04
 author: ai
 subject: "Stripe webhook integration — session ended mid-implementation, three open threads"
 tags: [stripe, webhooks, payments, backend]
-expires_after: 3_sessions
+expires: 2026-04-25
 ---
 
 ## Where we are

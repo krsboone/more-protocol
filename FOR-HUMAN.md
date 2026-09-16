@@ -8,6 +8,12 @@ memory store.
 Read [`SPEC.md`](SPEC.md) if you want the full formal specification. This
 file is the practical, day-to-day companion.
 
+One thing worth knowing up front: the store is for you as much as for the
+AI. Six months into the reference store, its human author said it had helped
+him at least as much as it helped the AI it was built for. The journal and
+the running narrative are a record of the work that neither of you would
+otherwise have.
+
 ---
 
 ## Setting up a store
@@ -36,8 +42,8 @@ your-memory-store/
 ├── project/       # context on ongoing work
 ├── reference/     # pointers to external systems
 ├── experience/    # the AI's own insights and growth
-├── handoff/       # open threads between sessions
-└── journal/       # brief entries after sessions, if you keep one
+├── journal/       # one short entry per session — the most-read files in a mature store
+└── handoff/       # open threads between sessions
 ```
 
 None of this is mandatory structure — the spec only requires `MORE.md` and
@@ -59,6 +65,7 @@ setup — config files, environment variables, hooks — live.
 | `project` | AI or you | Context, decisions, or constraints behind ongoing work that aren't in the code |
 | `reference` | AI or you | A pointer to an external system and what it's for |
 | `experience` | AI | Something shifts in how it understands or approaches things |
+| `journal` | AI, at session close | A short narrative of the session — tone, what was built, what mattered |
 | `handoff` | AI, at session close | Open threads that the next session should pick up |
 | `constraint` | **You — only you** | A hard limit that must always apply |
 
@@ -79,6 +86,9 @@ patterns that work well:
   supersedes an existing memory rather than letting two versions drift.
 - **"Write a handoff before we stop"** — useful when you're ending a session
   with loose ends and know you won't pick it back up immediately.
+- **"Park that"** — a thread you're not going to touch for a while, but
+  whose notes are still good. It drops out of the session-start load without
+  being thrown away.
 - **"Go through your memories about [topic] and flag anything that seems
   stale, wrong, or duplicated"** — a periodic accuracy pass. The protocol's
   trust model leans on correction as the safeguard, which only works if
@@ -131,6 +141,11 @@ To add one:
 Your AI can help you word a constraint clearly, but the decision of *what*
 to constrain, and the act of writing the file, should be yours.
 
+Global constraints apply everywhere — including directories that are not
+git repositories at all. A project-scoped constraint or an exemption only
+kicks in when the AI can see a matching remote; when it can't, it falls back
+to applying everything global. That's deliberate.
+
 ---
 
 ## Manually editing memory files
@@ -141,9 +156,9 @@ directly:
 ```yaml
 ---
 id: short-kebab-case-identifier
-type: user | feedback | project | reference | experience | handoff | constraint
+type: user | feedback | project | reference | experience | journal | handoff | constraint
 trust: confirmed | observed | inferred
-status: active | deprecated   # handoff also: partial | resolved | superseded | expired
+status: active | deprecated   # handoff also: partial | parked | resolved | superseded | expired
 created: YYYY-MM-DD
 updated: YYYY-MM-DD            # omit if never updated
 author: human | ai | joint
@@ -163,6 +178,7 @@ tags: [optional, terms]
 - Writing new memories during a session
 - Routine index updates as new files are added
 - Drafting `history` blocks when a memory changes meaningfully
+- Journal entries — give it standing permission and it will keep them current
 
 Git is the safety net either way — every edit is a diff, and nothing is
 truly lost.
@@ -179,26 +195,43 @@ truly lost.
   deprecated. If a new handoff supersedes an old one on the same thread, the
   old one should be marked `status: superseded` — not left active alongside
   the new one.
+- **Dormant is not the same as active.** A plan you haven't started, or work
+  blocked on something outside the session, should be `parked`. The reference
+  store ran for months with eighteen "active" handoffs of which none were in
+  flight — every morning the index suggested more open obligation than
+  existed. Parking fixes that without losing anything.
+- **Index descriptions drift from file status.** A line that says "complete"
+  next to a file that says `active` is the kind of thing nobody notices for
+  months. Ask for both to be updated together.
 - **Ask for a pruning pass occasionally.** "Look through MEMORY.md — is
   anything here stale, duplicated, or resolved-but-still-listed?" is a
   useful question to ask every so often, especially after a burst of
   activity.
 
 This is mostly upkeep the AI can do once asked — it just needs to be asked.
+Or checked for you: see the next section.
 
 ---
 
-## Periodic review with more-map
+## Periodic review: more-map and more-lint
 
-[`more-map`](https://github.com/krsboone/more-map) reads a store and renders
-a portrait of it: session timeline, handoff map, topic threads, tone over
-time. It's a useful "zoom out" — a way to see the shape of the work and how
-time has actually been spent, separate from any single session's view.
+Two small tools read a store and tell you about it. Both use `$MORE_PATH`
+for zero-config discovery, so if that's set (see
+[`implementations/`](implementations/)), running either is a single command.
 
-It uses `$MORE_PATH` for zero-config discovery, so if that's set (see
-[`implementations/`](implementations/)), running it is as simple as invoking
-the tool. Worth running every few weeks, or whenever picking a project back
-up after time away — it re-orients faster than re-reading the raw files.
+[`more-map`](https://github.com/krsboone/more-map) renders a portrait:
+session timeline, handoff map, topic threads, tone over time. It's the
+"zoom out" — a way to see the shape of the work and how time has actually
+been spent, separate from any single session's view. Worth running every
+few weeks, or whenever picking a project back up after time away.
+
+[`more-lint`](https://github.com/krsboone/more-lint) tells you what needs
+fixing: handoffs past their expiry or untouched for weeks, resolved ones
+not yet deprecated, files that have drifted from the spec, memories missing
+from the index, uncommitted changes, and — if you keep one — an assessment
+that is overdue. Every rule it checks is a rule the AI already knows; the
+tool just makes them fire. Run it at session close, or put it in a
+pre-commit hook.
 
 ---
 
@@ -213,3 +246,7 @@ The git history doubles as the audit trail the protocol assumes exists:
 `history` blocks reference past states, and deprecated memories are kept
 rather than deleted. None of that is meaningful if the repo itself isn't
 backed up.
+
+Commit at session close, not "when it feels like enough has changed." The
+reference store once went two months with its journal entries sitting
+uncommitted on one disk. `more-lint` will tell you when that's happening.
